@@ -5,6 +5,7 @@ import com.example.mareu.service.impl.UserServiceImpl;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -30,6 +31,12 @@ public class UserApiServiceImplTest {
     @Test
     public void getUsers() {
         // GIVEN
+        List<User> vList;
 
+        // WHEN
+        vList = impl.getUsers();
+
+        // THEN
+        assertNotNull(vList);
     }
 }
