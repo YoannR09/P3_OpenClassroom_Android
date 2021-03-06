@@ -12,9 +12,15 @@ import org.junit.Test;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -32,8 +38,17 @@ public class AddMeetingActivityTest {
         assertThat(mActivity, notNullValue());
     }
 
+    @Test
     public void addMeeting_shouldAddMeeting() {
+        onView(withText("yoannroche")).perform(click());
+        onView(withId(R.id.about_add_meeting)).perform(click()).perform(typeText("Sujet"));
+        onView(ViewMatchers.isRoot()).perform(ViewActions.closeSoftKeyboard());
 
+        onView(withId(R.id.view_bottom)).perform(scrollTo());
+        onView(withText("Select your room")).perform(click());
+        onView(withText("Salle D")).inRoot(withDecorView(not(mActivity.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed())).perform(click());
+
+        onView(withId(R.id.fab)).perform(click());
     }
 
     @Test
@@ -43,8 +58,9 @@ public class AddMeetingActivityTest {
 
     @Test
     public void selectRooms_shouldNotBeEmpty() {
-        //onView(ViewMatchers.withId(R.id.list_autocomplete)).perform(scrollTo());
-
+        onView(withId(R.id.view_bottom)).perform(scrollTo());
+        onView(withText("Select your room")).perform(click());
+        onView(withText("Salle D")).inRoot(withDecorView(not(mActivity.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed())).perform(click());
     }
 
     @Test
@@ -56,22 +72,55 @@ public class AddMeetingActivityTest {
     public void error_throwMessageEmptySubject() {
         onView(withText("yoannroche")).perform(click());
 
+        onView(withId(R.id.view_bottom)).perform(scrollTo());
+        onView(withText("Select your room")).perform(click());
+        onView(withText("Salle D")).inRoot(withDecorView(not(mActivity.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed())).perform(click());
+
         onView(withId(R.id.fab)).perform(click());
+
+        onView(allOf(withText(R.string.error_subject)))
+                .check(matches(isDisplayed()));
     }
 
     @Test
     public void error_throwMessageNoUsersSelect() {
         onView(withId(R.id.about_add_meeting)).perform(click()).perform(typeText("Sujet"));
         onView(ViewMatchers.isRoot()).perform(ViewActions.closeSoftKeyboard());
+
+        onView(withId(R.id.view_bottom)).perform(scrollTo());
+        onView(withText("Select your room")).perform(click());
+        onView(withText("Salle C")).inRoot(withDecorView(not(mActivity.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed())).perform(click());
+
         onView(withId(R.id.fab)).perform(click());
+
+        onView(allOf(withText(R.string.error_user)))
+                .check(matches(isDisplayed()));
     }
 
     @Test
-    public void error_throwMessageRoomNotFree() {
-       // mActivity.setHoursView("19");
+    public void error_throwMessageRoomNotSelect() {
         onView(withText("yoannroche")).perform(click());
         onView(withId(R.id.about_add_meeting)).perform(click()).perform(typeText("Sujet"));
         onView(ViewMatchers.isRoot()).perform(ViewActions.closeSoftKeyboard());
         onView(withId(R.id.fab)).perform(click());
+
+        onView(allOf(withText(R.string.error_rooms)))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void error_throwMessageRoomNotFree() {
+        onView(withText("yoannroche")).perform(click());
+        onView(withId(R.id.about_add_meeting)).perform(click()).perform(typeText("Sujet"));
+        onView(ViewMatchers.isRoot()).perform(ViewActions.closeSoftKeyboard());
+
+        onView(withId(R.id.view_bottom)).perform(scrollTo());
+        onView(withText("Select your room")).perform(click());
+        onView(withText("Salle A")).inRoot(withDecorView(not(mActivity.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed())).perform(click());
+
+        onView(withId(R.id.fab)).perform(click());
+
+        onView(allOf(withText(R.string.not_free)))
+                .check(matches(isDisplayed()));
     }
 }

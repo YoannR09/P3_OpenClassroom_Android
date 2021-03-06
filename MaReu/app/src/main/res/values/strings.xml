@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Ma Réu</string>
+    <string name="error_rooms">Error : select room</string>
+    <string name="error_subject">Error : subject of meeting cannot be empty</string>
+    <string name="error_user">Error : select users for meeting</string>
+    <string name="not_free">This room at this timming is not free</string>
 </resources>

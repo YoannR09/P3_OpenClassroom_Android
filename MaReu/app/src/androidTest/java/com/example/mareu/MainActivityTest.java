@@ -1,7 +1,5 @@
 package com.example.mareu;
 
-import android.view.View;
-
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;

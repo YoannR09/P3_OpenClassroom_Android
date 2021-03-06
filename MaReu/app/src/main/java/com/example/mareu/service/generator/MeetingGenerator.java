@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class MeetingGenerator {
 
     public static List<Meeting> MEETINGS = Arrays.asList(
-            new Meeting(1,"Test", 1, 19, 0),
+            new Meeting(1,"Test", 1, 12, 0),
             new Meeting(2,"Sujet", 2, 13,30)
     );
 

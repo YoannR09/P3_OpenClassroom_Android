@@ -165,13 +165,15 @@ public class AddMeetingActivity extends AppCompatActivity implements AdapterView
     public void addMeeting() {
         boolean canBeCreate = true;
         if(users.size() == 0) {
-            new DialogError("Error : select users for meeting", this.findViewById(R.id.coordinator));
+            new DialogError(getBaseContext().getResources().getString(R.string.error_user), this.findViewById(R.id.coordinator));
             canBeCreate = false;
         } else if (editTextAbout.getText().toString().length() < 1) {
-            new DialogError("Error : subject of meeting cannot be empty",this.findViewById(R.id.coordinator) );
+            new DialogError(getBaseContext().getResources().getString(R.string.error_subject),
+                    this.findViewById(R.id.coordinator) );
             canBeCreate = false;
         } else if (roomSelect == 0) {
-            new DialogError("Error : select room", this.findViewById(R.id.coordinator));
+            new DialogError(getBaseContext().getResources().getString(R.string.error_rooms),
+                    this.findViewById(R.id.coordinator));
             canBeCreate = false;
         }
         boolean freeRoom = true;
@@ -186,7 +188,7 @@ public class AddMeetingActivity extends AppCompatActivity implements AdapterView
             int timeMeetingFromListMin = ((m.getHour() * 60) + m.getMin() - 60 );
             if(timeMeetingFromListMax > time && timeMeetingFromListMin < time) {
                 freeRoom = false;
-                new DialogError("This room at this timming is not free", this.findViewById(R.id.coordinator));
+                new DialogError(getBaseContext().getResources().getString(R.string.not_free), this.findViewById(R.id.coordinator));
             } else {
                 freeRoom = true;
             }
