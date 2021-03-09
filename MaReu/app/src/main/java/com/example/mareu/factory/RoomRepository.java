@@ -14,10 +14,14 @@ public class RoomRepository {
     }
 
     public Room getRoom(int id) {
-        return api.getRoom(id);
+        return getApi().getRoom(id);
     }
 
     public List<Room> getRooms() {
-        return api.getRooms();
+        return getApi().getRooms();
+    }
+
+    protected RoomApiService getApi() {
+        return api;
     }
 }

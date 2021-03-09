@@ -42,10 +42,10 @@ public class MainActivityTest {
 
     @Test
     public void meeting_deleteAction_shouldRemoveItem() {
-        onView(withId(R.id.rvContacts)).check(withItemCount(2));
+        onView(withId(R.id.rvContacts)).check(withItemCount(3));
         onView(withId(R.id.rvContacts))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(1, new DeleteViewAction()));
-        onView(withId(R.id.rvContacts)).check(withItemCount(1));
+        onView(withId(R.id.rvContacts)).check(withItemCount(2));
     }
 
     @Test
