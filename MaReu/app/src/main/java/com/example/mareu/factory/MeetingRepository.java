@@ -1,7 +1,10 @@
 package com.example.mareu.factory;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.example.mareu.di.Repositories;
-import com.example.mareu.di.UseCases;
 import com.example.mareu.model.Meeting;
 import com.example.mareu.model.Participant;
 import com.example.mareu.model.User;
@@ -9,6 +12,7 @@ import com.example.mareu.service.MeetingApiService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MeetingRepository {
 
@@ -25,27 +29,27 @@ public class MeetingRepository {
      * @return
      */
     public List<Meeting> getMeetings() {
-        List<Meeting> vList = api.getMeetings();
+        List<Meeting> vList = getApi().getMeetings();
         initList(vList);
         return vList;
     }
 
     public List<Meeting> getMeetingsByRoomId(int roomId) {
-        List<Meeting> vList = api.getMeetingsByRoomId(roomId);
+        List<Meeting> vList = getApi().getMeetingsByRoomId(roomId);
         initList(vList);
         return vList;
     }
 
     public Meeting getMeeting(int id) {
-        return api.getMeeting(id);
+        return getApi().getMeeting(id);
     }
 
     public void deleteMeeting(Meeting meeting) {
-        api.deleteMeeting(meeting);
+        getApi().deleteMeeting(meeting);
     }
 
     public void addMeeting(Meeting meeting) {
-        api.addMeeting(meeting);
+        getApi().addMeeting(meeting);
     }
 
     public void initList(List<Meeting> list) {
@@ -59,5 +63,21 @@ public class MeetingRepository {
             }
             meeting.setUsers(users);
         }
+    }
+
+    public List<Meeting> filterByHour(int hour) {
+        return getApi().filterByHour(hour);
+    }
+
+    public List<Meeting> filterByRoom(int roomId) {
+        return getApi().filterByRoom(roomId);
+    }
+
+    public List<Meeting> filterByHourAndRoom(int hour, int roomId) {
+        return getApi().filterByHourAndRoom(hour,roomId);
+    }
+
+    protected MeetingApiService getApi() {
+        return api;
     }
 }

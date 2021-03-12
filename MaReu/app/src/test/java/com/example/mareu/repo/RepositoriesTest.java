@@ -1,4 +1,4 @@
-package com.example.mareu;
+package com.example.mareu.repo;
 
 import com.example.mareu.di.Repositories;
 import com.example.mareu.factory.MeetingRepository;

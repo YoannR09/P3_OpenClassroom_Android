@@ -84,11 +84,15 @@ public class AddMeetingActivity extends AppCompatActivity implements AdapterView
         actv = (AutoCompleteTextView) findViewById(R.id.list_autocomplete);
         actv.setThreshold(1);
         actv.setAdapter(adapter);
-        actv.setOnItemClickListener(this);
+        actv.setOnItemClickListener(this::onItemClick);
         changeHoursPicker.setOnClickListener(view -> generateTimePicker());
         confirmButton.setOnClickListener(view -> addMeeting());
     }
 
+    /**
+     * This method display the timer pick
+     * To choice an hour and mins meetings
+     */
     public void generateTimePicker() {
         time = new MaterialTimePicker.Builder()
                 .setTimeFormat(TimeFormat.CLOCK_12H)

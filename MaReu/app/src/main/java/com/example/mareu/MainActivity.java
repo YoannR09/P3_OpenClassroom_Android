@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,19 +16,26 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.example.mareu.di.UseCases;
 import com.example.mareu.model.Meeting;
+import com.example.mareu.model.Room;
 import com.example.mareu.ui.AddMeetingActivity;
 import com.example.mareu.ui.adapter.MeetingAdapter;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,13 +43,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  implements AdapterView.OnItemClickListener {
 
     private MeetingAdapter adapter;
     private ArrayList<Meeting> meetings = new ArrayList<>();
+    private AutoCompleteTextView actv;
     private MaterialToolbar toolbar;
-    private Button buttonFilter;
+    private int roomFilter;
 
+    /**
+     * This method has called on init class
+     * Here we init every element on page
+     * @param savedInstanceState
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar.inflateMenu(R.menu.menu_filter);
 
         toolbar.setOnMenuItemClickListener(item -> {
-            System.out.println(R.id.action_filter);
             if(item.getItemId()==R.id.action_filter) {
                 new FilterActionListener(this).onShow();
             }
@@ -71,16 +84,28 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new AddMeetingActionListener(this));
     }
 
+    /**
+     * Refresh adapter to display dynamic list
+     */
     public void refreshAdapter() {
         refreshData();
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Refresh list data contains on adapter
+     */
     public void refreshData() {
         meetings.clear();
         meetings.addAll(UseCases.getMeetingsUseCase().call());
     }
 
+    /**
+     * Notif when the user return on main activity to refresh adapter
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -91,7 +116,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * this class show activity for create new meeting
+     * This method has call when has execute on element view
+     * Here we catch the room select click
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        for(Room r: UseCases.getRoomsUseCase().call()) {
+            if (parent.getItemAtPosition(position).toString().equals(r.getTitle())) {
+                roomFilter = r.getId();
+            }
+        }
+    }
+
+    /**
+     * This class show activity for create new meeting
      */
     public class AddMeetingActionListener implements View.OnClickListener {
 
@@ -122,37 +164,44 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void onShow() {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-            builder.setTitle("Select meetings order");
-            String[] items = {"Order by name",  "Order by time"};
-            List<Meeting> vList = UseCases.getMeetingsUseCase().call();
-            builder.setItems(items, (dialog, which) -> {
-                switch (which) {
-                    case 0:
-                        Collections.sort(vList, (Comparator) (softDrinkOne, softDrinkTwo) ->
-                                ((Meeting)softDrinkOne).getRoom().getTitle()
-                                        .compareTo(((Meeting)softDrinkTwo).getRoom().getTitle()));
-                        break;
-                    case 1:
-                        Collections.sort(vList, (Comparator) (softDrinkOne, softDrinkTwo) -> (new Integer((((Meeting)softDrinkOne).getHour() * 60) + ((Meeting)softDrinkTwo).getMin())
-                                .compareTo((((Meeting)softDrinkTwo).getHour() * 60) + ((Meeting)softDrinkTwo).getMin())));
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + which);
+            final Dialog dialog = new Dialog(mainActivity);
+            roomFilter = 0;
+            dialog.setContentView(R.layout.dialog_filter_meetings);
+            dialog.setTitle("Filter meetings");
+            Button filter = dialog.findViewById(R.id.button_filter);
+            TextInputEditText hourFilter = dialog.findViewById(R.id.hour_filter);
+            List<String> items = new ArrayList<>();
+            for(Room r: UseCases.getRoomsUseCase().call()) {
+                items.add(r.getTitle());
+            }
+            ArrayAdapter<String> ad = new ArrayAdapter<>
+                    (mainActivity, android.R.layout.select_dialog_item, items);
+            actv = (AutoCompleteTextView) dialog.findViewById(R.id.list_autocomplete_filter);
+            actv.setThreshold(1);
+            actv.setAdapter(ad);
+            actv.setOnItemClickListener(mainActivity);
+            filter.setOnClickListener(view -> {
+                List<Meeting> vListFilter;
+                boolean roomUsed = roomFilter != 0;
+                boolean hourUsed = hourFilter.getText().toString().length() > 0;
+                if(roomUsed && !hourUsed) {
+                    vListFilter = UseCases.filterMeetingsByRoomUseCase().call(roomFilter);
+                } else if(!roomUsed && hourUsed) {
+                    vListFilter = UseCases.filterMeetingsByHourUseCase()
+                            .call(Integer.valueOf(hourFilter.getText().toString()));
+                } else if(roomUsed && hourUsed) {
+                    vListFilter = UseCases.filterMeetingsByRoomAndHourUseCase()
+                            .call(Integer.valueOf(hourFilter.getText().toString()), roomFilter);
+                } else {
+                    vListFilter = UseCases.getMeetingsUseCase().call();
                 }
                 meetings.clear();
-                meetings.addAll(vList);
+                meetings.addAll(vListFilter);
                 adapter.notifyDataSetChanged();
+                dialog.cancel();
             });
-            builder.show();
+            dialog.show();
+
         }
-    }
-
-    public int compare(Meeting d, Meeting d1) {
-        return d1.getId() - d.getId();
-    }
-
-    public int compareTime(Meeting d, Meeting d1) {
-        return ((d1.getHour() * 60) + d1.getMin()) - ((d.getId() * 60) + d1.getMin());
     }
 }

@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasMinimumChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -52,5 +53,12 @@ public class MainActivityTest {
     public void meeting_addAction_shouldOpenForm() {
         onView(ViewMatchers.withId(R.id.button_adding_meeting)).perform(click());
         onView(ViewMatchers.withId(R.id.fab)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void meeting_filterByHour() {
+        onView(ViewMatchers.withId(R.id.action_filter)).perform(click());
+        onView(withId(R.id.hour_filter)).perform(click()).perform(typeText("12"));
+        onView(withId(R.id.rvContacts)).check(withItemCount(1));
     }
 }

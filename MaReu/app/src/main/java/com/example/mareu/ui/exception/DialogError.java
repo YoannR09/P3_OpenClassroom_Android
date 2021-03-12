@@ -1,11 +1,8 @@
 package com.example.mareu.ui.exception;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 
-import com.example.mareu.R;
-import com.example.mareu.ui.AddMeetingActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 public class DialogError {

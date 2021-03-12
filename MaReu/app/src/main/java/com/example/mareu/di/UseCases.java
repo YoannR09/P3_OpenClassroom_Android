@@ -1,6 +1,9 @@
 package com.example.mareu.di;
 
 import com.example.mareu.useCases.meetings.DeleteMeetingUseCase;
+import com.example.mareu.useCases.meetings.FilterMeetingsByHourUseCase;
+import com.example.mareu.useCases.meetings.FilterMeetingsByRoomAndHourUseCase;
+import com.example.mareu.useCases.meetings.FilterMeetingsByRoomUseCase;
 import com.example.mareu.useCases.meetings.GetMeetingByIdUseCase;
 import com.example.mareu.useCases.meetings.GetMeetingByRoomIdUseCase;
 import com.example.mareu.useCases.meetings.GetMeetingsUseCase;
@@ -15,6 +18,9 @@ public class UseCases {
     private static GetRoomsUseCase getRoomsUseCase;
     private static GetUsersUseCase getUsersUseCase;
     private static DeleteMeetingUseCase deleteMeetingUseCase;
+    private static FilterMeetingsByHourUseCase filterMeetingsByHourUseCase;
+    private static FilterMeetingsByRoomAndHourUseCase filterMeetingsByRoomAndHourCase;
+    private static FilterMeetingsByRoomUseCase filterMeetingsByRoomUseCase;
 
     public static GetMeetingsUseCase getMeetingsUseCase() {
         if(getMeetingsUseCase == null) getMeetingsUseCase = new GetMeetingsUseCase();
@@ -46,5 +52,21 @@ public class UseCases {
         return deleteMeetingUseCase;
     }
 
+    public static FilterMeetingsByRoomAndHourUseCase filterMeetingsByRoomAndHourUseCase() {
+        if(filterMeetingsByRoomAndHourCase == null)
+            filterMeetingsByRoomAndHourCase = new FilterMeetingsByRoomAndHourUseCase();
+        return filterMeetingsByRoomAndHourCase;
+    }
 
+    public static FilterMeetingsByHourUseCase filterMeetingsByHourUseCase() {
+        if(filterMeetingsByHourUseCase == null)
+            filterMeetingsByHourUseCase = new FilterMeetingsByHourUseCase();
+        return filterMeetingsByHourUseCase;
+    }
+
+    public static  FilterMeetingsByRoomUseCase filterMeetingsByRoomUseCase() {
+        if(filterMeetingsByRoomUseCase == null)
+            filterMeetingsByRoomUseCase = new FilterMeetingsByRoomUseCase();
+        return filterMeetingsByRoomUseCase;
+    }
 }

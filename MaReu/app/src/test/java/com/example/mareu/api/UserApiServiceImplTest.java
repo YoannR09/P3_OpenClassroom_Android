@@ -1,4 +1,4 @@
-package com.example.mareu;
+package com.example.mareu.api;
 
 import com.example.mareu.model.User;
 import com.example.mareu.service.impl.UserServiceImpl;

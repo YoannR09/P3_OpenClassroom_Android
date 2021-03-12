@@ -1,4 +1,4 @@
-package com.example.mareu;
+package com.example.mareu.repo;
 
 import com.example.mareu.factory.RoomRepository;
 import com.example.mareu.model.Room;
@@ -24,11 +24,11 @@ public class RoomRepositoryTest {
     public void getRoom() {
         // GIVEN
         Room room = new Room(3,"Title");
-        when(repository.getRoom(anyInt())).thenReturn(room);
+        when(api.getRoom(anyInt())).thenReturn(room);
         Room roomResult;
 
         // WHEN
-        roomResult = api.getRoom(3);
+        roomResult = repository.getRoom(3);
 
         // THEN
         assertEquals(3,roomResult.getId());
@@ -43,10 +43,10 @@ public class RoomRepositoryTest {
         Room room2 = new Room(5,"Title2");
         rooms.add(room1);
         rooms.add(room2);
-        when(repository.getRooms()).thenReturn(rooms);
+        when(api.getRooms()).thenReturn(rooms);
 
         // WHEN
-        List<Room> vList = api.getRooms();
+        List<Room> vList = repository.getRooms();
 
         // THEN
         assertEquals(2, vList.size());

@@ -1,11 +1,16 @@
 package com.example.mareu.service.impl;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.example.mareu.model.Meeting;
 import com.example.mareu.service.MeetingApiService;
 import com.example.mareu.service.generator.MeetingGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MeetingApiServiceImpl implements MeetingApiService {
 
@@ -46,5 +51,29 @@ public class MeetingApiServiceImpl implements MeetingApiService {
     @Override
     public void addMeeting(Meeting meeting) {
         meetings.add(meeting);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public List<Meeting> filterByHour(int hour) {
+        return meetings.stream()
+                .filter(c -> c.getHour() == hour)
+                .collect(Collectors.toList());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public List<Meeting> filterByRoom(int roomId) {
+        return meetings.stream()
+                .filter(c -> c.getRoomId() == roomId)
+                .collect(Collectors.toList());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public List<Meeting> filterByHourAndRoom(int hour, int roomId) {
+        return meetings.stream()
+                .filter(c -> c.getRoomId() == roomId && c.getHour() == hour)
+                .collect(Collectors.toList());
     }
 }
