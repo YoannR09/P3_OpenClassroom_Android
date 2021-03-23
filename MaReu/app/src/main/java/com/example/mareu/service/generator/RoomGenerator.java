@@ -10,16 +10,16 @@ import java.util.List;
 public abstract class RoomGenerator {
 
     public static List<Room> ROOMS = Arrays.asList(
-            new Room(1,"Salle A"),
-            new Room(2,"Salle B"),
-            new Room(3,"Salle C"),
-            new Room(4,"Salle D"),
-            new Room(5,"Salle E"),
-            new Room(6,"Salle F"),
-            new Room(7,"Salle G"),
-            new Room(8,"Salle H"),
-            new Room(9,"Salle I"),
-            new Room(10,"Salle J")
+            new Room(1,"Room A"),
+            new Room(2,"Room B"),
+            new Room(3,"Room C"),
+            new Room(4,"Room D"),
+            new Room(5,"Room E"),
+            new Room(6,"Room F"),
+            new Room(7,"Room G"),
+            new Room(8,"Room H"),
+            new Room(9,"Room I"),
+            new Room(10,"Room J")
     );
 
     public static List<Room> generateRooms() {

@@ -1,9 +1,5 @@
 package com.example.mareu.factory;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
 import com.example.mareu.di.Repositories;
 import com.example.mareu.model.Meeting;
 import com.example.mareu.model.Participant;
@@ -12,7 +8,6 @@ import com.example.mareu.service.MeetingApiService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MeetingRepository {
 

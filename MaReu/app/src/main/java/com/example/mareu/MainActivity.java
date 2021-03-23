@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.NumberPicker;
 
 import com.example.mareu.di.UseCases;
 import com.example.mareu.model.Meeting;
@@ -48,22 +49,21 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     private MeetingAdapter adapter;
     private ArrayList<Meeting> meetings = new ArrayList<>();
     private AutoCompleteTextView actv;
+    private AutoCompleteTextView actvHour;
     private MaterialToolbar toolbar;
     private int roomFilter;
+    private int hourFilter;
 
     /**
      * This method has called on init class
      * Here we init every element on page
      * @param savedInstanceState
      */
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         toolbar = findViewById(R.id.topAppBar);
-
         toolbar.inflateMenu(R.menu.menu_filter);
 
         toolbar.setOnMenuItemClickListener(item -> {
@@ -125,10 +125,15 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        boolean roomSelect = false;
         for(Room r: UseCases.getRoomsUseCase().call()) {
             if (parent.getItemAtPosition(position).toString().equals(r.getTitle())) {
                 roomFilter = r.getId();
+                roomSelect = true;
             }
+        }
+        if(!roomSelect) {
+            hourFilter = position;
         }
     }
 
@@ -166,10 +171,41 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         public void onShow() {
             final Dialog dialog = new Dialog(mainActivity);
             roomFilter = 0;
+            hourFilter = 24;
             dialog.setContentView(R.layout.dialog_filter_meetings);
             dialog.setTitle("Filter meetings");
             Button filter = dialog.findViewById(R.id.button_filter);
-            TextInputEditText hourFilter = dialog.findViewById(R.id.hour_filter);
+            List<String> horros = new ArrayList<>();
+            for(int i = 0; i < 24; i++) {
+                switch (i) {
+                    case 0 :
+                        horros.add("12:00 AM - 1:00 AM");
+                        break;
+                    case 1:case 2: case 3:case 4:case 5:
+                    case 6:case 7: case 8:case 9:case 10:
+                        horros.add(i + ":00 AM - "+ (i+1) + ":00 AM");
+                        break;
+                    case 11:
+                        horros.add("11:00 AM - 12:00 PM");
+                        break;
+                    case 12:
+                        horros.add("12:00 PM - 1:00 PM");
+                        break;
+                    case 13:case 14:case 15:case 16: case 17:
+                    case 18:case 19: case 20:case 21:case 22:
+                        horros.add((i - 12) + ":00 PM - "+ (i + 1 - 12) + ":00 PM");
+                        break;
+                    case 23 :
+                        horros.add((i-12) + ":00 PM - " + "12:00 AM");
+                        break;
+                }
+            }
+            ArrayAdapter<String> adHour = new ArrayAdapter<>
+                    (mainActivity, android.R.layout.select_dialog_item, horros);
+            actvHour = (AutoCompleteTextView) dialog.findViewById(R.id.list_autocomplete_hour_filter);
+            actvHour.setThreshold(1);
+            actvHour.setAdapter(adHour);
+            actvHour.setOnItemClickListener(mainActivity);
             List<String> items = new ArrayList<>();
             for(Room r: UseCases.getRoomsUseCase().call()) {
                 items.add(r.getTitle());
@@ -183,15 +219,15 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             filter.setOnClickListener(view -> {
                 List<Meeting> vListFilter;
                 boolean roomUsed = roomFilter != 0;
-                boolean hourUsed = hourFilter.getText().toString().length() > 0;
+                boolean hourUsed = hourFilter != 24;
                 if(roomUsed && !hourUsed) {
                     vListFilter = UseCases.filterMeetingsByRoomUseCase().call(roomFilter);
                 } else if(!roomUsed && hourUsed) {
                     vListFilter = UseCases.filterMeetingsByHourUseCase()
-                            .call(Integer.valueOf(hourFilter.getText().toString()));
+                            .call(Integer.valueOf(hourFilter));
                 } else if(roomUsed && hourUsed) {
                     vListFilter = UseCases.filterMeetingsByRoomAndHourUseCase()
-                            .call(Integer.valueOf(hourFilter.getText().toString()), roomFilter);
+                            .call(Integer.valueOf(hourFilter), roomFilter);
                 } else {
                     vListFilter = UseCases.getMeetingsUseCase().call();
                 }
@@ -201,7 +237,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                 dialog.cancel();
             });
             dialog.show();
-
         }
     }
 }

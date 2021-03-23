@@ -27,21 +27,19 @@
             android:orientation="horizontal"
             android:gravity="center">
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/outlinedText"
-                android:layout_width="100dp"
+                android:id="@+id/filter_hour"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:hint="Hour"
-                android:textColor="@android:color/black"
-                android:backgroundTint="@color/colorPrimary"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/hour_filter"
-                    android:inputType="phone"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                <AutoCompleteTextView
+                    android:id="@+id/list_autocomplete_hour_filter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="25"
+                    android:inputType="none"
+                    android:text="@string/time_slots"
+                    android:textColor="@android:color/black"
+                    style="@style/Widget.AppCompat.Spinner.DropDown.ActionBar"
                     />
-
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </LinearLayout>

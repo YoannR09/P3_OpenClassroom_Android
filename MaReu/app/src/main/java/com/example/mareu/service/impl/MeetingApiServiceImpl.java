@@ -53,6 +53,7 @@ public class MeetingApiServiceImpl implements MeetingApiService {
         meetings.add(meeting);
     }
 
+    /*
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public List<Meeting> filterByHour(int hour) {
@@ -75,5 +76,39 @@ public class MeetingApiServiceImpl implements MeetingApiService {
         return meetings.stream()
                 .filter(c -> c.getRoomId() == roomId && c.getHour() == hour)
                 .collect(Collectors.toList());
+    }
+    */
+
+    @Override
+    public List<Meeting> filterByHour(int hour) {
+        List<Meeting> filterList = new ArrayList<>();
+        for(Meeting m: meetings) {
+            if(m.getHour() == hour) {
+                filterList.add(m);
+            }
+        }
+        return filterList;
+    }
+
+    @Override
+    public List<Meeting> filterByRoom(int roomId) {
+        List<Meeting> filterList = new ArrayList<>();
+        for(Meeting m: meetings) {
+            if(m.getRoomId() == roomId) {
+                filterList.add(m);
+            }
+        }
+        return filterList;
+    }
+
+    @Override
+    public List<Meeting> filterByHourAndRoom(int hour, int roomId) {
+        List<Meeting> filterList = new ArrayList<>();
+        for(Meeting m: meetings) {
+            if(m.getRoomId() == roomId && m.getHour() == hour) {
+                filterList.add(m);
+            }
+        }
+        return filterList;
     }
 }
